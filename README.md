@@ -30,6 +30,8 @@ PHP-Slack
 
 ### Usage
 
+**If not using Laravel, you'll need to pass your Slack API Token to the Slack constructor**
+
 Every (non-simple) API call starts with a prepare function, this is where you declare your method. You do this like so:
 ```php
 Slack::prepare('COMMAND');
@@ -109,4 +111,9 @@ If you're using laravel, add this service provider:
 Also, this Facade:
 ```php
 'Slack' => 'ConnorVG\Slack\SlackFacade'
+```
+
+You'll need to add your Slack API token to `config/app.php`:
+```php
+'slackapikey' => 'XXX'
 ```
