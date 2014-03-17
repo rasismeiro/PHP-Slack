@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ConnorVG\\Slack\\": "src/ConnorVG/Slack"
+            "ConnorVG\\Slack\\": "src/"
         }
     },
     "minimum-stability": "dev"
