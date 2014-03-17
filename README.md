@@ -98,3 +98,15 @@ One thing to note is that there are a few helper methods, both for special use a
 * `$payloadObject->icon`
 
 	Set's the bot's icon (URL only, EG: 'example.com/example.png').
+
+### Laravel
+
+If you're using laravel, add this service provider:
+```php
+'ConnorVG\Slack\SlackServiceProvider'
+```
+
+Also, this Facade:
+```php
+'Slack' => 'ConnorVG\Slack\SlackFacade'
+```
