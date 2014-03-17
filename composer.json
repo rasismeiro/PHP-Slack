@@ -17,5 +17,10 @@
             "ConnorVG\\Slack\\": "src/"
         }
     },
+    "suggest": {
+        "connorvg/php-wtf": "A PHP implementation of my WholeTextFunctions library",
+        "connorvg/laravel-wolframalpha": "A Laravel wrapper for the Wolfram|Alpha API"
+    },
+
     "minimum-stability": "dev"
 }
