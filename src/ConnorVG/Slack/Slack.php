@@ -2,7 +2,7 @@
 
 class Slack
 {
-	
+
 	public $apikey;
 
 	/**
@@ -19,74 +19,40 @@ class Slack
 	 * Static Variables
 	 */
 
-	protected static $supportedMetadata = [
+	protected static $commandMetadata = [
 		'users' => [
-			'list' => false
+			'list' => [false, []]
 		],
 		'channels' => [
-			'history' => true,
-			'mark' => true,
-			'list' => true
+			'history' => [true, []],
+			'mark' => [true, []],
+			'list' => [true, []]
 		],
 		'files' => [
 		//	'upload' => true,
-			'list' => true
+			'list' => [true, []]
 		],
 		'im' => [
-			'history' => true,
-			'list' => false
+			'history' => [true, []],
+			'list' => [false, []]
 		],
 		'groups' => [
-			'history' => true,
-			'list' => true
+			'history' => [true, []],
+			'list' => [true, []]
 		],
 		'search' => [
-			'all' => true,
-			'files' => true,
-			'messages' => true
+			'all' => [true, []],
+			'files' => [true, []],
+			'messages' => [true, []]
 		],
 		'chat' => [
-			'postMessage' => true
-		],
-		'auth' => [
-			'test' => false
-		]
-	];
-
-	protected static $defaults = [
-		'users' => [
-			'list' => []
-		],
-		'channels' => [
-			'history' => [],
-			'mark' => [],
-			'list' => []
-		],
-		'files' => [
-		//	'upload' => [],
-			'list' => []
-		],
-		'im' => [
-			'history' => [],
-			'list' => []
-		],
-		'groups' => [
-			'history' => [],
-			'list' => []
-		],
-		'search' => [
-			'all' => [],
-			'files' => [],
-			'messages' => []
-		],
-		'chat' => [
-			'postMessage' => [
+			'postMessage' => [true, [
 				'username' => 'ConnorBot',
 				'icon_emoji' => ':octocat:'
-			]
+			]]
 		],
 		'auth' => [
-			'test' => []
+			'test' => [false, []]
 		]
 	];
 
@@ -144,7 +110,7 @@ class Slack
 	{
 		$command = explode('.', $command);
 		$last = $command[count($command) - 1];
-		$currentCommand = static::$supportedMetadata;
+		$currentCommand = static::$commandMetadata;
 
 		foreach ($command as $subCommand)
 		{
@@ -164,24 +130,24 @@ class Slack
 	{
 		$command = explode('.', $command);
 		$last = array_pop($command);
-		$currentCommand = static::$supportedMetadata;
+		$currentCommand = static::$commandMetadata;
 
 		foreach ($command as $subCommand)
 			$currentCommand = $currentCommand[$subCommand];
 
-		return $currentCommand[$last];
+		return $currentCommand[$last][0];
 	}
 
 	protected static function get_default_payload($command)
 	{
 		$command = explode('.', $command);
 		$last = array_pop($command);
-		$currentCommand = static::$defaults;
+		$currentCommand = static::$commandMetadata;
 
 		foreach ($command as $subCommand)
 			$currentCommand = $currentCommand[$subCommand];
 
-		return $currentCommand[$last];
+		return $currentCommand[$last][1];
 	}
 
 	public static function hasError($data)
