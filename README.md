@@ -101,6 +101,14 @@ One thing to note is that there are a few helper methods, both for special use a
 
 	Set's the bot's icon (URL only, EG: 'example.com/example.png').
 
+#### Special
+
+* `Slack::message`
+
+	Recieves: $message (String or Array), $channel, $from, $to, $icon_emoji, $icon_url.
+
+	This will auto-magically send a message based on the given parameters.
+
 ### Laravel
 
 If you're using laravel, add this service provider:
