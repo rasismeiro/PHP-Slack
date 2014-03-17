@@ -1,7 +1,7 @@
 PHP-Slack
 =========
 
-> A PHP implementation for the Slack API w/ Laravel binds to help out Laravel lovers.
+> An Eloquent ORM styled PHP implementation for the Slack API w/ Laravel binds to help out Laravel lovers.
 
 ### Supported API Functions
 
