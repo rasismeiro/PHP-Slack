@@ -60,7 +60,7 @@ class Slack
 	 * Utilities
 	 */
 
-	protected static function get_web_page($url) {
+	protected static function get_web_page($url, $params) {
 		try {
 			$ch = curl_init();
 
@@ -70,6 +70,13 @@ class Slack
 			curl_setopt($ch, CURLOPT_URL, $url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+			$params_string = '';
+			foreach (array_keys($params) as $param)
+				$params_string .= '&' . $param . '=' . static::urlify($params[$param]);
+
+			curl_setopt($ch, CURLOPT_POST, count($params));
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $params_string);
 
 			$content = curl_exec($ch);
 
@@ -96,14 +103,9 @@ class Slack
 			return urlencode($data);
 	}
 
-	protected static function build_url($command, $token, $params = [])
+	protected static function build_url($command, $token)
 	{
-		$url = 'https://bigbite.slack.com/api/' . $command . '?token=' . $token;
-
-		foreach (array_keys($params) as $param)
-			$url = $url . '&' . $param . '=' . static::urlify($params[$param]);
-
-		return $url;
+		return 'https://slack.com/api/' . $command . '?token=' . $token;
 	}
 
 	protected static function command_supported($command)
@@ -161,7 +163,7 @@ class Slack
 
 	public function send($payload)
 	{
-		return json_decode(static::get_web_page(static::build_url($payload->command, $this->apikey, $payload->data)), true);
+		return json_decode(static::get_web_page(static::build_url($payload->command, $this->apikey), $payload->data), true);
 	}
 
 	public function prepare($command)
