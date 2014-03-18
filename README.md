@@ -112,12 +112,14 @@ One thing to note is that there are a few helper methods, both for special use a
 ### Composer setup
 
 In the `require` key of `composer.json` file add the following
-
-    "connorvg/php-slack": "dev-master"
+```javascript
+"connorvg/php-slack": "dev-master"
+```
 
 Run the Composer update comand
-
-    $ composer update
+```bash
+$ composer update
+```
 
 ### Laravel
 
