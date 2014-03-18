@@ -108,6 +108,16 @@ One thing to note is that there are a few helper methods, both for special use a
 	Recieves: $message (String or Array), $channel, $from, $to, $icon_emoji, $icon_url.
 
 	This will auto-magically send a message based on the given parameters.
+	
+### Composer setup
+
+In the `require` key of `composer.json` file add the following
+
+    "connorvg/php-slack": "dev-master"
+
+Run the Composer update comand
+
+    $ composer update
 
 ### Laravel
 
