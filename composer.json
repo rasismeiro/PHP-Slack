@@ -19,7 +19,8 @@
     },
     "suggest": {
         "connorvg/php-wtf": "A PHP implementation of my WholeTextFunctions library",
-        "connorvg/laravel-wolframalpha": "A Laravel wrapper for the Wolfram|Alpha API"
+        "connorvg/laravel-wolframalpha": "A Laravel wrapper for the Wolfram|Alpha API",
+        "connorvg/laravel-permissions": "A Laravel permissions package that uses keys rather than roles"
     },
 
     "minimum-stability": "dev"
