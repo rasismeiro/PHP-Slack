@@ -28,7 +28,9 @@ class SlackServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		$this->registerSlack(); 
+		$this->registerSlack();
+
+		$this->installSlack();
 	}
 
 	/**
@@ -40,7 +42,16 @@ class SlackServiceProvider extends ServiceProvider {
 	{
 		$this->app->bind('slack', function($app)
 		{
-			return new Slack($app['config']->get('app.slack.apikey'), $app['config']->get('app.slack.dynamic') ?: false);
+			return Slack::getInstance($app['config']->get('app.slack.apikey'), $app['config']->get('app.slack.dynamic') ?: false, $app['config']->get('app.slack.verified_only') ?: false);
 		});
+	}
+
+	protected function installSlack()
+	{
+		$installs = $this->app['config']->get('app.slack.installs');
+
+		if ($installs !== null)
+			foreach ($installs as $token => $key)
+				Slack::installToken($token, $key);
 	}
 }

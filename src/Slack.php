@@ -5,16 +5,20 @@ class Slack
 
 	protected $apikey;
 	protected $dynamic;
+	protected $verified_only;
+
+	protected $utilities;
 
 	/**
 	 * Create a new Slack instance.
 	 *
 	 * @return void
 	 */
-	public function __construct($apikey, $dynamic = true)
+	public function __construct($apikey, $dynamic = true, $verified_only = true)
 	{
 		$this->apikey = $apikey;
 		$this->dynamic = $dynamic;
+		$this->verified_only = $verified_only;
 	}
 
 	/**
@@ -57,6 +61,46 @@ class Slack
 			'test' => [false, []]
 		]
 	];
+
+	protected static $instances = [];
+	protected static $tokens = [];
+
+	/**
+	 * Static Getter
+	 */
+	
+	public static function getInstance($apikey = null, $dynamic = false)
+	{
+		if ($apikey === null)
+			return null;
+
+		if (isset(static::$instances[$apikey]))
+			return static::$instances[$apikey];
+
+		static::$instances[$apikey] = new Slack($apikey, $dynamic);
+		return static::$instances[$apikey];
+	}
+
+	public static function getTokenInstance($token)
+	{
+		if (isset(static::$tokens[$token]))
+			return static::getInstance(static::$tokens[$token]);
+
+		foreach (static::$instances as $slack)
+			if (!$slack->verified_only)
+			{
+				static::$tokens[$token] = $slack->apikey;
+
+				return $slack;
+			}
+
+		return null;
+	}
+
+	public static function installToken($token, $apikey)
+	{
+		static::$tokens[$token] = $apikey;
+	}
 
 	/**
 	 * Utilities
@@ -166,6 +210,14 @@ class Slack
 	public function isDynamic()
 	{
 		return $this->dynamic;
+	}
+
+	public function utilities()
+	{
+		if ($this->utilities === null)
+			$this->utilities = new SlackUtilities($this);
+
+		return $this->utilities;
 	}
 
 	public function send($payload)
