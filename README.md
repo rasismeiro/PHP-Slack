@@ -188,7 +188,7 @@ public function auth_user()
 public function auth_user_id()
 ```
 
-### Incoming Webhooks
+### Incoming Webhooks (Outgoing WebHooks from Slack's perspective!)
 
 Support for incoming webhooks is fully natural feeling, just like outgoing API side of this package. All you have to do is pass the params from the api request (sent from Slack) into a SlackIncoming object. In Laravel, we simply do:
 ```php
@@ -252,7 +252,7 @@ Route::post('slack', function()
 });
 ```
 
-The webhook:
+The webhook *[slack.com/services/new -> DIY Integrations & Customisations -> Outgoing WebHooks](https://slack.com/services/new)*:
 <p align="center">
 <img src="http://puu.sh/7Bojk.png">
 </p>
