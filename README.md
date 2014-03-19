@@ -76,12 +76,6 @@ $lastTenMessages = Slack::prepare('channels.history')->set(['channel' => 'CHANNE
 
 One thing to note is that there are a few helper methods, both for special use and general use.
 
-### Response
-
-You have two choices when it comes to the response object, the default is an array that directly represents the JSON response. The second option is a 'Dynamic Response' which allows you to access the data as so: `$response->members[0]->name` rather than `$response['members'][0]['name']`.
-
-This must be enabled via the `slack.dynamic` bool config in app.php.
-
 #### General
 
 * `$payloadObject->message`
@@ -113,7 +107,121 @@ This must be enabled via the `slack.dynamic` bool config in app.php.
 
 	Recieves: $message (String or Array), $channel, $from, $to, $icon_emoji, $icon_url.
 
-	This will auto-magically send a message based on the given parameters.
+	This will auto-magically create a message based on the given parameters and return the SlackPayload.
+
+### Response
+
+You have two choices when it comes to the response object, the default is an array that directly represents the JSON response. The second option is a 'Dynamic Response' which allows you to access the data as so: `$response->members[0]->name` rather than `$response['members'][0]['name']`.
+
+To dynamic response must be enabled via the `slack.dynamic` bool config in `config/app.php`.
+
+### Utilities
+
+One major addition to my Slack implementation is the 'Utilities' feature. This allows us to very quickly poll Slack's API and have the data cached so when ever we use it we don't have to re-poll Slack. You can even clear the cache by doing this:
+```php
+//	Clear the full cache
+$utilities->clear();
+
+//	Clear a set of key's caches
+$utilities->clear([ 'users.list', 'channels.list' /* etc */ ]);
+
+//	Clear one key's cache
+$utilities->clear('files.list');
+```
+
+This class is accessed on a Slack instance level. Basically, just do:
+```php
+//	For an instance
+$slack->utilities();
+
+//	For the Laravel Facade
+Slack::utilities();
+```
+
+Utilites contains methods for getting all lists (by just using their initial key):
+```php
+//	Gets all users
+$utilities->users();
+
+//	Gets all groups
+$utilities->groups();
+
+/* etc */
+```
+
+Each of these functions has a complimentary non-plural version which allows you to specify a target:
+```php
+//	A user
+public function user($name = null, $id = null);
+
+//	A channel
+public function channel($name = null, $id = null);
+
+//	A file
+public function file($name = null, $id = null);
+
+//	An im
+public function im($id = null, $user = null);
+
+//	A group
+public function group($name = null, $id = null);
+```
+
+Finally, we have auth-specific functions:
+```php
+//	Does $slack->prepare('auth.test')->send()
+public function auth()
+
+//	Returns the 'url' param from the 'auth.test' packet
+public function auth_url()
+
+//	Returns the 'team' param from the 'auth.test' packet
+public function auth_team()
+
+//	Returns the 'team_id' param from the 'auth.test' packet
+public function auth_team_id()
+
+//	Returns the 'user' param from the 'auth.test' packet
+public function auth_user()
+
+//	Returns the 'user_id' param from the 'auth.test' packet
+public function auth_user_id()
+```
+
+### Incoming Webhooks
+
+Support for incoming webhooks is fully natural feeling, just like outgoing API side of this package. All you have to do is pass the params from the api request (sent from Slack) into a SlackIncoming object. In Laravel, we simply do:
+```php
+$packet = new ConnorVG\Slack\SlackIncoming(Input::all());
+```
+
+With this packet, we can do a lot of cool things. The most important ones, though, are these:
+```php
+$errored = $packet->hasError();
+$slack = $packet->slack();
+```
+
+If `$errored` is true then that means the data is malformed or data is missing, this is a sign of a faked request (non-Slack request).
+
+If `$slack` is null then that means the packet was from an non-verified source (as determined by your initial config of Slack).
+
+Now that we have that out of the way, all you have to do is:
+```php
+$slack->ANY_SLACK_FEATURE();
+```
+
+Because the $slack object is a full instance of Slack (as if you created it yourself) with the correct api key set to respond to the sender, ready to go.
+
+All we need to know now is the contents of `$packet`, the contents are everything that Slack sends to you. This includes the Channel ID it came from, the User ID it came from, the Text that was sent etc.
+
+One thing to note, it is slightly different to the main stuff sent from Slack, I actually store the recieved Text in `source_text` and have Text as a formatted piece of text that basically has the `trigger_word` removed from it.
+
+To access any of these variables, simply do something like:
+```php
+$packet->channel_id;
+$packet->user;
+$packet->token;
+```
 	
 ### Composer setup
 
@@ -127,6 +235,8 @@ Run the Composer update comand
 $ composer update
 ```
 
+*NOTE: I advise you don't use dev-master versions and specify a stable release (E.G: 1.0)*
+
 ### Laravel
 
 If you're using laravel, add this service provider:
@@ -139,7 +249,21 @@ Also, this Facade:
 'Slack' => 'ConnorVG\Slack\SlackFacade'
 ```
 
-You'll need to add your Slack API token to `config/app.php`:
+You'll need to add your preferences to `config/app.php`:
 ```php
-'slackapikey' => 'XXX'
+'slack' => array(
+//	Your unique Slack API token
+	'apikey' => 'XXX',
+
+// Whether or not to limit incoming webhook messages to verified only
+	'verified_only' => true,
+
+//	The tokens you wish to associate with API keys
+	'installs' => [
+		'TOKEN' => 'APIKEY'
+	],
+
+//	Wether or not to use my Dynamic Response model
+	'dynamic' => true
+)
 ```
