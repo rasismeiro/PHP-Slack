@@ -76,6 +76,12 @@ $lastTenMessages = Slack::prepare('channels.history')->set(['channel' => 'CHANNE
 
 One thing to note is that there are a few helper methods, both for special use and general use.
 
+### Response
+
+You have two choices when it comes to the response object, the default is an array that directly represents the JSON response. The second option is a 'Dynamic Response' which allows you to access the data as so: `$response->members[0]->name` rather than `$response['members'][0]['name']`.
+
+This must be enabled via the `slack.dynamic` bool config in app.php.
+
 #### General
 
 * `$payloadObject->message`

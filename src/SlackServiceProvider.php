@@ -40,7 +40,7 @@ class SlackServiceProvider extends ServiceProvider {
 	{
 		$this->app->bind('slack', function($app)
 		{
-			return new Slack($app['config']->get('app.slackapikey'));
+			return new Slack($app['config']->get('app.slack.apikey'), $app['config']->get('app.slack.dynamic') ?: false);
 		});
 	}
 }

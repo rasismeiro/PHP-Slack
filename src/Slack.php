@@ -3,16 +3,18 @@
 class Slack
 {
 
-	public $apikey;
+	protected $apikey;
+	protected $dynamic;
 
 	/**
-	 * Create a new wholetextfunctions instance.
+	 * Create a new Slack instance.
 	 *
 	 * @return void
 	 */
-	public function __construct($apikey)
+	public function __construct($apikey, $dynamic = true)
 	{
 		$this->apikey = $apikey;
+		$this->dynamic = $dynamic;
 	}
 
 	/**
@@ -59,7 +61,7 @@ class Slack
 	/**
 	 * Utilities
 	 */
-
+	
 	protected static function get_web_page($url, $params) {
 		try {
 			$ch = curl_init();
@@ -161,9 +163,18 @@ class Slack
 	 * Methods
 	 */
 
+	public function isDynamic()
+	{
+		return $this->dynamic;
+	}
+
 	public function send($payload)
 	{
-		return json_decode(static::get_web_page(static::build_url($payload->command, $this->apikey), $payload->data), true);
+		$response = json_decode(static::get_web_page(static::build_url($payload->command, $this->apikey), $payload->data), true);
+		if ($this->dynamic)
+			return new SlackResponse($response);
+		else
+			return $response;
 	}
 
 	public function prepare($command)
@@ -192,6 +203,6 @@ class Slack
 		elseif ($icon_url !== null)
 			$message->icon($icon_url);
 
-		return $message->send();
+		return $message;
 	}
 }
