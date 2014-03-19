@@ -222,7 +222,47 @@ $packet->channel_id;
 $packet->user;
 $packet->token;
 ```
-	
+
+### Recommended
+
+This works amazingly with [ConnorVG/PHP-WTF](https://github.com/ConnorVG/PHP-WTF), an example of usage would be this:
+
+The command:
+```php
+WTF::addCommand('wolframalpha Query:source', function($wtf, $executer, $args)
+{
+	$answer = WA::easyQuery($args[0]);
+
+	$executer->slack()->message($answer, $executer->channel_id, 'Wolfram|Alpha', $executer->user_id, ':equation')->send();
+});
+WTF::addAlias('wolframalpha', 'wa');
+```
+
+The `Incoming Webhook`
+```php
+Route::post('slack', function()
+{
+	$packet = new ConnorVG\Slack\SlackIncoming(Input::all());
+	$ret = WTF::Execute($packet->text, $packet);
+
+	if (!$ret[0])
+	{ /* THERE WAS AN ERROR */ }
+
+	return '';
+});
+```
+
+The webhook:
+<p align="center">
+<img src="http://puu.sh/7Bojk.png">
+</p>
+
+The usage:
+
+<img src="http://puu.sh/7A9HC.png">
+
+*NOTE: This sample uses [ConnorVG/Laravel-WolframAlpha](https://github.com/ConnorVG/Laravel-WolframAlpha) and [laravel/laravel](https://github.com/laravel/laravel)*
+
 ### Composer setup
 
 In the `require` key of `composer.json` file add the following
