@@ -139,7 +139,10 @@ Also, this Facade:
 'Slack' => 'ConnorVG\Slack\SlackFacade'
 ```
 
-You'll need to add your Slack API token to `config/app.php`:
+You'll need to add your Slack API token to `config/app.php`, along with the dynamic config if you wish to use it:
 ```php
-'slackapikey' => 'XXX'
+'slack' => array(
+	'apikey' => 'XXX',
+	'dynamic' => true
+),
 ```
