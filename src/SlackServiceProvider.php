@@ -42,13 +42,13 @@ class SlackServiceProvider extends ServiceProvider {
 	{
 		$this->app->bind('slack', function($app)
 		{
-			return Slack::getInstance($app['config']->get('app.slack.apikey'), $app['config']->get('app.slack.dynamic') ?: false, $app['config']->get('app.slack.verified_only') ?: false);
+			return Slack::getInstance($app['config']->get('services.slack.apikey'), $app['config']->get('services.slack.dynamic') ?: false, $app['config']->get('services.slack.verified_only') ?: false);
 		});
 	}
 
 	protected function installSlack()
 	{
-		$installs = $this->app['config']->get('app.slack.installs');
+		$installs = $this->app['config']->get('services.slack.installs');
 
 		if ($installs !== null)
 			foreach ($installs as $token => $key)
