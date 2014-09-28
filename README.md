@@ -1,3 +1,5 @@
+# **This package is now deprecated - please use https://github.com/Frlnc/php-slack instead!**
+
 PHP-Slack
 =========
 
